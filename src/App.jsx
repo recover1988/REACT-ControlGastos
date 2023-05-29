@@ -36,14 +36,27 @@ function App() {
         }, 1000);
     };
     const guardarGasto = (gasto) => {
-        gasto.id = generarId();
-        gasto.fecha = Date.now();
-        setGastos([...gastos, gasto]);
+        if (gasto.id) {
+            // Actualizar
+            const gastosActualizados = gastos.map((gastoState) =>
+                gastoState.id === gasto.id ? gasto : gastoState
+            );
+            setGastos(gastosActualizados);
+        } else {
+            // Nuevo Gasto
+            gasto.id = generarId();
+            gasto.fecha = Date.now();
+            setGastos([...gastos, gasto]);
+        }
 
         setAnimarModal(false);
         setTimeout(() => {
             setModal(false);
         }, 1000);
+    };
+    const eliminarGasto = (id) => {
+        const gastosActualizados = gastos.filter((gasto) => gasto.id !== id);
+        setGastos(gastosActualizados);
     };
     return (
         <div className={modal ? "fijar" : ""}>
@@ -60,6 +73,7 @@ function App() {
                         <ListadoGastos
                             gastos={gastos}
                             setGastoEditar={setGastoEditar}
+                            eliminarGasto={eliminarGasto}
                         />
                     </main>
                     <div className="nuevo-gasto">
